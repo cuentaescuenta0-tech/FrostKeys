@@ -669,7 +669,12 @@ private fun PreviewScreen() {
     initPreview(LocalContext.current)
     Theme(previewDark) {
         Surface {
-            MainSettingsScreen({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
+            MainSettingsScreen(
+                onClickAbout = {}, onClickTextCorrection = {}, onClickPreferences = {}, onClickToolbar = {},
+                onClickGestureTyping = {}, onClickDataGathering = {}, onClickAdvanced = {}, onClickAppearance = {},
+                onClickLanguage = {}, onClickLayouts = {}, onClickDictionaries = {}, onClickWelcomeWizard = {},
+                onClickBack = {},
+            )
         }
     }
 }
