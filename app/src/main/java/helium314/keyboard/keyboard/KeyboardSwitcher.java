@@ -1175,8 +1175,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     @Override
-
-    @Override
     public void setAccessPointKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAccessPointKeyboard");
