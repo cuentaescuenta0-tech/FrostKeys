@@ -42,14 +42,11 @@ android {
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.orion.frostkeys"
+        applicationId = "com.orion.frostkeys.lineage"
         minSdk = 24
         targetSdk = 36
         versionCode = providers.of(GitCommitCountValueSource::class.java) {}.get()
-        versionName = "2.5.9"
-        buildConfigField("String", "CONTENT_PROVIDER_AUTHORITY", "\"${applicationId}.stickercontentprovider\"")
-        manifestPlaceholders["stickerAuthority"] = "${applicationId}.stickercontentprovider"
-        manifestPlaceholders["stickerProviderAuthority"] = "${applicationId}.stickercontentprovider"
+        versionName = "0.1.0-lineage"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64"))
@@ -81,7 +78,6 @@ android {
             isMinifyEnabled = false
             isJniDebuggable = false
             applicationIdSuffix = ".debug"
-            manifestPlaceholders["stickerProviderAuthority"] = "${defaultConfig.applicationId}.debug.stickercontentprovider"
         }
         create("runTests") { // build variant for running tests on CI that skips tests known to fail
             isMinifyEnabled = false
@@ -93,7 +89,6 @@ android {
             isJniDebuggable = false
             signingConfig = signingConfigs.getByName("debug")
             applicationIdSuffix = ".debug"
-            manifestPlaceholders["stickerProviderAuthority"] = "${defaultConfig.applicationId}.debug.stickercontentprovider"
         }
 
         androidComponents.onVariants { variant: ApplicationVariant ->
@@ -129,11 +124,6 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = false
-            pickFirsts.add("**/libsharpyuv.so")
-            pickFirsts.add("**/libwebp.so")
-            pickFirsts.add("**/libwebpcodec_jni.so")
-            pickFirsts.add("**/libwebpdemux.so")
-            pickFirsts.add("**/libwebpmux.so")
         }
     }
 
@@ -192,10 +182,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.8")
     implementation("sh.calvin.reorderable:reorderable:3.1.0") // for easier re-ordering
     implementation("com.github.skydoves:colorpicker-compose:1.1.3") // for user-defined colors
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("io.coil-kt:coil:2.7.0")
     implementation("io.coil-kt:coil-gif:2.7.0")
-    implementation("com.aureusapps.android:webp-android:1.1.2")
     implementation("com.google.android.material:material:1.12.0")
     implementation("dev.chrisbanes.haze:haze:0.7.3")
 

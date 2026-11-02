@@ -36,6 +36,22 @@ class ToolbarUtilsTest {
     }
 
     @Test
+    fun upgradeToolbarPrefsDropsRemovedFeatureKeys() {
+        prefs.edit {
+            putString(Settings.PREF_TOOLBAR_KEYS, "SETTINGS,true|AI_TOOLS,true|GIFS,true|STICKERS,true|CLIPBOARD,false")
+            putString(Settings.PREF_PINNED_TOOLBAR_KEYS, "VOICE,true|AI_TOOLS,true|GIFS,true|STICKERS,true")
+        }
+        upgradeToolbarPrefs(prefs)
+        val toolbar = prefs.getString(Settings.PREF_TOOLBAR_KEYS, "")!!
+        val pinned = prefs.getString(Settings.PREF_PINNED_TOOLBAR_KEYS, "")!!
+        assertFalse(toolbar.contains("AI_TOOLS"))
+        assertFalse(toolbar.contains("GIFS"))
+        assertFalse(toolbar.contains("STICKERS"))
+        assertFalse(pinned.contains("AI_TOOLS"))
+        assertFalse(pinned.contains("GIFS"))
+        assertFalse(pinned.contains("STICKERS"))
+    }
+    @Test
     fun pinnedToolbarKeysAreLimitedToFive() {
         val enabled = listOf(
             ToolbarKey.VOICE,
@@ -76,16 +92,16 @@ class ToolbarUtilsTest {
             putString(Settings.PREF_PINNED_TOOLBAR_KEYS, pinnedPref(enabled))
         }
 
-        assertFalse(addPinnedKey(prefs, ToolbarKey.STICKERS))
+        assertFalse(addPinnedKey(prefs, ToolbarKey.EMOJI))
         assertEquals(enabled, getPinnedToolbarKeys(prefs, ToolbarKey.VOICE))
     }
 
     @Test
     fun quickPinRefusesPersistentToolbarKeyDuplicate() {
-        prefs.edit { putString(Settings.PREF_PERSISTENT_TOOLBAR_KEY, ToolbarKey.STICKERS.name) }
+        prefs.edit { putString(Settings.PREF_PERSISTENT_TOOLBAR_KEY, ToolbarKey.EMOJI.name) }
 
-        assertFalse(addPinnedKey(prefs, ToolbarKey.STICKERS))
-        assertTrue(getPinnedToolbarKeys(prefs, ToolbarKey.STICKERS).isEmpty())
+        assertFalse(addPinnedKey(prefs, ToolbarKey.EMOJI))
+        assertTrue(getPinnedToolbarKeys(prefs, ToolbarKey.EMOJI).isEmpty())
     }
 
     @Test
@@ -97,8 +113,8 @@ class ToolbarUtilsTest {
         }
 
         assertEquals(
-            listOf(ToolbarKey.CLIPBOARD, ToolbarKey.NUMPAD, ToolbarKey.STICKERS, ToolbarKey.UNDO, ToolbarKey.REDO),
-            pinToolbarKeyAt(prefs, ToolbarKey.STICKERS, 2)
+            listOf(ToolbarKey.CLIPBOARD, ToolbarKey.NUMPAD, ToolbarKey.EMOJI, ToolbarKey.UNDO, ToolbarKey.REDO),
+            pinToolbarKeyAt(prefs, ToolbarKey.EMOJI, 2)
         )
     }
 
@@ -108,8 +124,8 @@ class ToolbarUtilsTest {
         prefs.edit { putString(Settings.PREF_PINNED_TOOLBAR_KEYS, pinnedPref(enabled)) }
 
         assertEquals(
-            listOf(ToolbarKey.CLIPBOARD, ToolbarKey.NUMPAD, ToolbarKey.UNDO, ToolbarKey.STICKERS),
-            pinToolbarKeyAt(prefs, ToolbarKey.STICKERS, 99)
+            listOf(ToolbarKey.CLIPBOARD, ToolbarKey.NUMPAD, ToolbarKey.UNDO, ToolbarKey.EMOJI),
+            pinToolbarKeyAt(prefs, ToolbarKey.EMOJI, 99)
         )
     }
 

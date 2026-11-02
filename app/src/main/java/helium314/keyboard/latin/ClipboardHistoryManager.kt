@@ -823,7 +823,7 @@ class ClipboardHistoryManager(
     private fun pasteImageClip(clip: RecentClip.Image, chipView: View, feedbackView: View) {
         val cachedUri = cacheImageClip(clip) ?: return
         dontShowCurrentSuggestion = true
-        val pasted = latinIME.commitKlipyContent(cachedUri, clip.label, normalizeImageMimeType(clip.mimeType).mimeType)
+        val pasted = latinIME.commitRichContent(cachedUri, clip.label, normalizeImageMimeType(clip.mimeType).mimeType)
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(KeyCode.NOT_SPECIFIED, feedbackView, HapticEvent.KEY_PRESS)
         if (pasted) chipView.isGone = true
     }
@@ -851,7 +851,7 @@ class ClipboardHistoryManager(
 
     fun pasteHistoryEntry(entry: ClipboardHistoryEntry): Boolean {
         val clip = decodeImageHistoryClip(entry.text) ?: return false
-        return latinIME.commitKlipyContent(clip.uri, clip.label, normalizeImageMimeType(clip.mimeType).mimeType)
+        return latinIME.commitRichContent(clip.uri, clip.label, normalizeImageMimeType(clip.mimeType).mimeType)
     }
 
     private fun copyImageClipAtomically(sourceUri: Uri, imageFile: File): Boolean {

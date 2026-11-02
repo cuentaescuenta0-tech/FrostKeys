@@ -1252,24 +1252,6 @@ public final class EmojiPalettesView extends LinearLayout
             if (batchPointers == null) {
                 return;
             }
-            final LatinIME latinIME = getLatinIME();
-            final MainKeyboardView keyboardView = KeyboardSwitcher.getInstance().getMainKeyboardView();
-            final Keyboard keyboard = keyboardView == null ? null : keyboardView.getKeyboard();
-            if (latinIME == null || keyboard == null) {
-                return;
-            }
-            latinIME.getKlipySearchGestureSuggestion(batchPointers, keyboard, new Suggest.OnGetSuggestedWordsCallback() {
-                @Override
-                public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                    if (suggestedWords == null || suggestedWords.isEmpty()) {
-                        return;
-                    }
-                    final String word = suggestedWords.getWord(0);
-                    if (word != null && !word.isBlank()) {
-                        post(() -> insertSearchText(word));
-                    }
-                }
-            });
         }
 
         @Override

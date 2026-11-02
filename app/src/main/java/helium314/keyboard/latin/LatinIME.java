@@ -63,7 +63,6 @@ import helium314.keyboard.keyboard.Keyboard;
 import helium314.keyboard.keyboard.KeyboardId;
 import helium314.keyboard.keyboard.KeyboardLayoutSet;
 import helium314.keyboard.keyboard.KeyboardSwitcher;
-import helium314.keyboard.keyboard.KlipyPalettesView;
 import helium314.keyboard.keyboard.MainKeyboardView;
 import helium314.keyboard.latin.SuggestedWords.SuggestedWordInfo;
 import helium314.keyboard.latin.common.ColorType;
@@ -823,7 +822,7 @@ public class LatinIME extends InputMethodService implements
         KtxKt.prefs(this).registerOnSharedPreferenceChangeListener(mPrefsListener);
     }
 
-    public boolean commitKlipyContent(Uri contentUri, String description, String mimeType) {
+    public boolean commitRichContent(Uri contentUri, String description, String mimeType) {
         final EditorInfo editorInfo = getCurrentInputEditorInfo();
         final InputConnection inputConnection = getCurrentInputConnection();
         if (editorInfo == null || inputConnection == null) {
@@ -831,9 +830,9 @@ public class LatinIME extends InputMethodService implements
             return false;
         }
 
-        final String[] contentMimeTypes = getKlipyContentMimeTypes(mimeType);
+        final String[] contentMimeTypes = getRichContentMimeTypes(mimeType);
         final String[] supportedMimeTypes = EditorInfoCompat.getContentMimeTypes(editorInfo);
-        if (!isKlipyContentSupported(supportedMimeTypes, contentMimeTypes)) {
+        if (!isRichContentSupported(supportedMimeTypes, contentMimeTypes)) {
             Log.w(TAG, "Target does not advertise rich content support: package=" + editorInfo.packageName
                     + ", sentMimeTypes=" + Arrays.toString(contentMimeTypes)
                     + ", supportedMimeTypes=" + Arrays.toString(supportedMimeTypes)
@@ -873,14 +872,11 @@ public class LatinIME extends InputMethodService implements
         return false;
     }
 
-    private String[] getKlipyContentMimeTypes(final String mimeType) {
-        if ("image/webp.wasticker".equals(mimeType)) {
-            return new String[] { "image/webp.wasticker", "image/webp" };
-        }
+    private String[] getRichContentMimeTypes(final String mimeType) {
         return new String[] { mimeType };
     }
 
-    private boolean isKlipyContentSupported(final String[] supportedMimeTypes, final String[] contentMimeTypes) {
+    private boolean isRichContentSupported(final String[] supportedMimeTypes, final String[] contentMimeTypes) {
         if (supportedMimeTypes == null)
             return false;
         for (String contentMimeType : contentMimeTypes) {
@@ -1488,7 +1484,7 @@ public class LatinIME extends InputMethodService implements
 
         // Reset to the main alphabet keyboard so that reopening always shows the ABC
         // view
-        // instead of whatever panel (emoji, clipboard, AI tools, klipy) was active.
+        // instead of whichever input panel was active.
         mKeyboardSwitcher.setAlphabetKeyboard();
     }
 
@@ -1898,8 +1894,7 @@ public class LatinIME extends InputMethodService implements
     public void onEvent(@NonNull final Event event) {
         if (event.getKeyCode() == KeyCode.ALPHA) {
             final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
-            if (switcher.isShowingEmojiPalettes() || switcher.isShowingKlipyPalettes()
-                    || switcher.isShowingClipboardHistory() || switcher.isShowingAiWritingTools()) {
+            if (switcher.isShowingEmojiPalettes() || switcher.isShowingClipboardHistory()) {
                 switcher.setAlphabetKeyboard();
                 switcher.requestUpdatingShiftState(getCurrentAutoCapsState(), getCurrentRecapitalizeState());
                 return;
@@ -1907,30 +1902,6 @@ public class LatinIME extends InputMethodService implements
         }
         if (KeyCode.VOICE_INPUT == event.getKeyCode()) {
             mRichImm.switchToShortcutIme(this);
-        }
-        if (event.getKeyCode() == KeyCode.AI_TOOLS || event.getKeyCode() == -214) {
-            KeyboardSwitcher.getInstance().onToggleKeyboard(KeyboardSwitcher.KeyboardSwitchState.AI_TOOLS);
-            return;
-        }
-        if (event.getKeyCode() == KeyCode.GIFS) {
-            final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
-            if (!switcher.isShowingKlipyPalettes()) {
-                switcher.onToggleKeyboard(KeyboardSwitcher.KeyboardSwitchState.KLIPY);
-            }
-            if (switcher.isShowingKlipyPalettes()) {
-                switcher.getKlipyPalettesView().selectTab("GIF");
-            }
-            return;
-        }
-        if (event.getKeyCode() == KeyCode.STICKERS) {
-            final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
-            if (!switcher.isShowingKlipyPalettes()) {
-                switcher.onToggleKeyboard(KeyboardSwitcher.KeyboardSwitchState.KLIPY);
-            }
-            if (switcher.isShowingKlipyPalettes()) {
-                switcher.getKlipyPalettesView().selectTab("STICKER");
-            }
-            return;
         }
         final InputTransaction completeInputTransaction = mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                 mKeyboardSwitcher.getKeyboardShiftMode(),
@@ -1969,10 +1940,6 @@ public class LatinIME extends InputMethodService implements
         mGestureConsumer.onGestureCanceled();
     }
 
-    public void getKlipySearchGestureSuggestion(final InputPointers batchPointers,
-            final Keyboard keyboard, final Suggest.OnGetSuggestedWordsCallback callback) {
-        mInputLogic.getGestureSuggestedWordsForExternalInput(batchPointers, keyboard, callback);
-    }
 
     /**
      * To be called after the InputLogic has gotten a chance to act on the suggested
@@ -2236,7 +2203,7 @@ public class LatinIME extends InputMethodService implements
             return true;
         }
         if (keyCode == KeyEvent.KEYCODE_BACK
-                && (mKeyboardSwitcher.isShowingKlipyPalettes() || mKeyboardSwitcher.isShowingEmojiPalettes())) {
+                && mKeyboardSwitcher.isShowingEmojiPalettes()) {
             return true;
         }
         if (mKeyboardActionListener.onKeyDown(keyCode, keyEvent))
@@ -2256,15 +2223,6 @@ public class LatinIME extends InputMethodService implements
             }
             mKeyboardSwitcher.setAlphabetKeyboard();
             return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_BACK && mKeyboardSwitcher.isShowingKlipyPalettes()) {
-            final KlipyPalettesView klipyView = mKeyboardSwitcher.getKlipyPalettesView();
-            if (klipyView != null) {
-                if (!klipyView.handleBackPress()) {
-                    mKeyboardSwitcher.setAlphabetKeyboard();
-                }
-                return true;
-            }
         }
         if (mKeyboardActionListener.onKeyUp(keyCode, keyEvent))
             return true;

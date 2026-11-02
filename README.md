@@ -1,190 +1,34 @@
-# FrostKeys
+# FrostKeys Lineage (migración experimental)
 
-<img src="assets/icon/FrostKeys_Icon_with_bg.png" alt="FrostKeys Icon" width="200">
+Este repositorio es un fork de desarrollo no oficial de [FrostKeys](https://github.com/AshwinSoni-01/FrostKeys). El objetivo es migrar el núcleo del teclado a [AOSP LatinIME mantenido por LineageOS](https://github.com/LineageOS/android_packages_inputmethods_LatinIME), conservando las funciones locales de FrostKeys que puedan portarse.
 
-**A personalized fork of [HeliBoard](https://github.com/HeliBorg/HeliBoard) with Blur UI effects, AI writing tools, and Klipy GIF & animated sticker support.**
+> **Estado:** trabajo en curso. Esta rama ya retira Gemini y Klipy, pero el port completo del núcleo a LatinIME de LineageOS todavía requiere integración y validación. No debe considerarse una versión final ni sustituye la aplicación original.
 
-FrostKeys takes the privacy focused foundation of HeliBoard and adds modern, high performance features for users who want more from their keyboard without sacrificing their data.
-<br>
+## Funciones que se busca conservar
 
-<a href="https://play.google.com/store/apps/details?id=com.orion.frostkeys">
-  <img alt="Get it on Google Play" height="100" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" />
-</a>
+- Interfaz Frosted Glass y personalización visual.
+- Menú de acceso, teclado emoji y búsqueda local de emoji.
+- Portapapeles local, diccionarios personalizados y varios idiomas.
+- Escritura por deslizamiento y respaldo/restauración de ajustes.
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fjqJHq8c9j)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0)
+Gemini y Klipy se eliminaron: esta compilación no incluye el asistente de IA, búsqueda remota de GIFs ni envío de stickers desde esos servicios.
 
+## Instalar junto a FrostKeys original
 
----
+La aplicación de este fork usa el identificador `com.orion.frostkeys.lineage`, distinto de `com.orion.frostkeys`. Por eso Android puede instalar ambas aplicaciones en el mismo dispositivo con datos y ajustes separados. Las compilaciones de depuración de CI usan además el sufijo `.debug`.
 
->
->
-> [!NOTE]
-> ### 🚀 Distribution & Availability
-> **FrostKeys is officially live and available on Google Play Store!**
-> * **Google Play Store:** [Download the official release](https://play.google.com/store/apps/details?id=com.orion.frostkeys) for verified updates and signature protection.
-> * **GitHub Releases:** Standalone APK binaries are not hosted directly on GitHub. In full compliance with the GPL v3.0 license, the complete source code remains open in this repository for local compilation, audit, and inspection.
->
-> ⚠️ **Important Security Notice**
-> 
-> **Avoid Sideloading Unofficial Builds & Extracted APKs**
-> 
-> A keyboard app handles your most sensitive inputs such as passwords, private messages, and personal credentials. Sideloading forwarded APKs or unofficial builds from third party channels carries high risks of tampering and keylogging injection. Only official builds on Google Play Store carry verified developer signatures and receive direct bug/security updates.
-> 
-> So please consider getting the app only from the official source.
----
+Los APK de GitHub Actions son artefactos de desarrollo, no versiones firmadas por el mantenedor original ni distribuciones oficiales. Revisa el código y el origen del artefacto antes de instalar un teclado, ya que un teclado puede procesar texto sensible.
 
-## 📸 Screenshots
+## Compilar
 
-<p float="left" align="center">
-  <img src="assets/screenshots/Screenshot_4.png" width="200" />
-  <img src="assets/screenshots/Screenshot_5.png" width="200" />
-  <img src="assets/screenshots/Screenshot_2.png" width="200" />
-  <img src="assets/screenshots/Screenshot_3.png" width="200" />
-</p>
+El workflow **Build FrostKeys Lineage APK** compila el APK de depuración en GitHub Actions para los cambios de la rama `lineageos-migration` y las pull requests. El artefacto se publica como `FrostKeys-Lineage-debug`. El workflow también verifica que el APK tenga el identificador de paquete paralelo esperado.
 
----
+Para compilar localmente con Android SDK y NDK instalados:
 
-## 📋 Table of Contents
-- [New Features](#-new-features)
-- [Original Features](#original-features-from-heliboard)
-- [Contributing & Support](contributing--support-#)
-- [License & Legal](#license--legal)
-- [Credits](#credits)
+```bash
+./gradlew assembleDebug
+```
 
----
+## Licencias y atribución
 
-## ✨ New Features
-
-### 1. The All-New Klipy Media Panel (GIFs & Animated Stickers)
-The Emoji and Media panel has been completely rebuilt to integrate the Klipy API, bringing an endless library of media right to your keyboard.
-* **Beautiful Layouts:** Browse GIFs in a gorgeous, staggered "river view" and find stickers in a clean, easy-to-tap 4-column grid.
-* **Flawless WhatsApp Integration:** Say goodbye to the share sheet and flattened static images! FrostKeys uses a custom-built `libwebp` processing engine to format and drop animated stickers *directly* into your WhatsApp chat bubbles with full animation intact.
-* **Bring Your Own Key:** Just like our AI tools, you are in control. Simply input your own personal Klipy API key in the settings to unlock unlimited GIF and sticker searches.
-
-### 2. Frosted Glass Design (Material You Evolution)
-Experience a modern, high-fidelity UI with our brand-new **Frosted Glass** engine.
-* **Dynamic Blur:** Real-time background blur for both Light and Dark modes.
-* **Fully Customizable:** Adjust the opacity, saturation, and "frost" intensity to match your wallpaper and device aesthetic.
-
-> [!NOTE]
-> ### ⚠️ Live Background Blur & Device Compatibility
-> Live background blur relies directly on **Android 12+ native cross-window blur APIs**. Because this is hardware and OEMdependent, compatibility varies:
-> 
-> * **Hardware Support Required:** The feature only works on devices running **Android 12 or newer** where the manufacturer has enabled native window blur support.
-> * **OEM Limitations:** Many brands disable real time window blurs on budget and mid-range devices to preserve performance, meaning the frosted effect will not render. Some manufacturers (like Samsung on budget devices) use a static snapshot blur in the UI, this is not a true real time blur and does not guarantee support for live keyboard blur.
-> * **Legacy Versions & Crashes:** On older Android versions or unsupported hardware, enabling blur effects may cause instability or crashes.
-> 
-> *If you experience crashes or visual glitches when toggling blur on your device, please share the logfile and report it in the [Discord Server](https://discord.gg/fjqJHq8c9js) so we can implement a proper fallback for your device model.*
-
-### 3. Access Point Menu (Enhanced Toolbar)
-We have retired the old static toolbar in favor of the **Access Point Menu**.
-* **Modernized Layout:** A cleaner, more intuitive way to access settings, clipboard, and one-handed mode.
-* **Modular Design:** Faster navigation with refined iconography.
-
-### 4. Selective Internet Capabilities
-While the core of the keyboard remains offline-first, we have added **optional** internet capabilities. (Yes! you can turn it off! 😉)
-* **Privacy Toggle:** Internet access is disabled by default. You decide when the keyboard connects to the web.
-* **Safe Connectivity:** Built specifically to power AI and Klipy Media features while keeping your keystrokes private.
-
-### 5. Gemini AI Integration
-FrostKeys brings modern AI writing tools directly into your text field.
-* **AI Writing Assistant:** Proofread, rewrite, or change the tone of your text instantly.
-* **Bring Your Own Key:** Powered by Google Gemini. Simply input your own Gemini API key in settings to unlock AI power without subscription fees.
-
-### 6. Material Design 3 Expressive UI
-FrostKeys embraces Google's latest **Material Design 3 Expressive** design language, delivering a fluid, modern visual experience.
-* **Expressive Styling:** Redesigned Ui elements, refined shapes, and modernized dynamic color palettes that seamlessly match your system theme.
-* **Refreshing Animations:** Smooth, tactile motion and bouncy physics integrated throughout.
----
-
-## Original Features From HeliBoard
-* **Privacy-First:** Based on AOSP / OpenBoard.
-* **Custom Dictionaries:** Add your own for suggestions and spell check.
-* **Multilingual Typing:** Support for over 70+ languages.
-* **Glide Typing:** Support for library extraction (swypelibs).
-* **Backup & Restore:** Easily move your learned words and settings to a new device.
-
----
-
-## 🛠️ Tech Stack
-
-| Category | Technology |
-| :--- | :--- |
-| **Languages** | [Kotlin](https://kotlinlang.org/) + [Java](https://dev.java/) + [C/C++ (NDK)](https://developer.android.com/ndk) |
-| **UI Framework** | [Jetpack Compose](https://developer.android.com/compose) + Android View System |
-| **Design System** | [Material Design 3](https://m3.material.io/) + Custom Frosted Glass Engine |
-| **Glassmorphism / Blur** | [Haze](https://github.com/chrisbanes/haze) + `RenderEffect` |
-| **AI Engine** | [Google Gemini API](https://ai.google.dev/) |
-| **Media & GIF Engine** | [Klipy API](https://klipy.co/) + [webp-android](https://github.com/aureusapps/webp-android) (`libwebp` JNI) |
-| **Image Loading** | [Coil](https://coil-kt.github.io/coil/) (Static Images & GIFs) |
-| **Networking & Serialization** | [OkHttp 3](https://square.github.io/okhttp/) + `kotlinx.serialization` |
-| **Build & Tooling** | Gradle (Kotlin DSL), NDK (ndk-build) |
-
-
-
----
-
-## Contributing & Support ❤️
-FrostKeys is a personal project, but the heavy lifting was done by the HeliBoard team.
-
-### Support FrostKeys
-If you love using FrostKeys and want to support ongoing development, maintenance, and new features, consider becoming a sponsor! Every bit of support directly helps keep this project alive and ad-free.
-
-[<img src="https://img.shields.io/badge/Sponsor-%E2%9D%A4-ea4aaa?style=for-the-badge&logo=github-sponsors&logoColor=white" alt="Sponsor on GitHub" height="35">](https://github.com/sponsors/AshwinSoni-01)
-
----
-
-### Support HeliBoard
-**Please support the upstream HeliBoard project!** This fork would not be possible without their incredible work on open-source privacy. You can support them via their official channels:
-* **GitHub:** [HeliBorg/HeliBoard](https://github.com/HeliBorg/HeliBoard)
-* **Wiki & FAQ:** [HeliBoard Wiki](https://github.com/HeliBorg/HeliBoard/wiki)
-* **Issues:** [HeliBoard Issue Tracker](https://github.com/HeliBorg/HeliBoard/issues)
-
----
-## 📢 Join Our Community
-
-If you enjoy using FrostKeys, please consider starring the repository ⭐!
-
-[![Join Discord](https://img.shields.io/badge/Discord-Join%20the%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fjqJHq8c9j)
-
-Our **[Discord Server](https://discord.gg/fjqJHq8c9j)** is our primary community hub for:
-- 💬 General discussion and setup sharing
-- 💡 Feature requests and suggestions
-- 🐛 Bug reports, crash logs.
-
->
-> Announcements and update broadcasts are also mirrored on [Telegram](https://t.me/FrostKeys).
----
-
-
-## License & Legal
-
-**FrostKeys** is a fork of **HeliBoard** (which is based on **OpenBoard** and **AOSP LatinIME**). 
-
-As a derivative work, FrostKeys is licensed under the **GNU General Public License v3.0**. 
-
-* **Copyleft Requirement:** In accordance with the GPL v3.0, the complete source code for FrostKeys is made available in this repository. Any further modifications or forks of FrostKeys must also be released under the same GPL v3.0 license.
-* **Preservation:** All original copyright and license notices from the HeliBoard, OpenBoard, and AOSP projects have been preserved in the source headers.
-* **Apache 2.0:** Since the app is based on the Apache 2.0 licensed AOSP Keyboard, those original terms also apply.
-* **Brand Assets:** The **FrostKeys** icon (by Orion) is licensed under [Creative Commons BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-
-> [!IMPORTANT]
-> No fork of this project will receive support, If you are using a third-party fork or custom build, please direct questions and issue reports to that fork's maintainer.
-
-**Disclaimer:** *Google Gemini is a trademark of Google LLC. Klipy is a trademark of Klipy. FrostKeys is not affiliated with or endorsed by Google or Klipy. Use of Gemini and Klipy features requires personal API keys and is subject to their respective Terms of Service.*
-
----
-
-## Credits
-- **Ashwin Soni (Orion):** Fork maintainer; creator of the Frosted Glass UI, Klipy media pipeline, and AI implementation. [@AshwinSoni1](https://t.me/AshwinSoni1)
-- **Syntrop:** UI/UX design contributions and official app icon. [@Syntrop2k2](https://t.me/Syntrop2k2)
-- **HeliBoard Team:** For the industry-leading open-source foundation.
-- **NGI Mobifree Fund:** Funding provided to the original HeliBoard project through [NLnet](https://nlnet.nl).
-- **AOSP / OpenBoard:** The ancestors of this project.
-
----
-
-<p align="center">
-  Made with ❤️ by <a href="https://github.com/AshwinSoni-01">Ashwin Soni (Orion)</a>
-</p>
+Este trabajo conserva los avisos de licencia de los proyectos de los que deriva. FrostKeys y las modificaciones bajo GPL-3.0 deben mantenerse conforme a sus términos; los componentes AOSP conservan sus avisos Apache-2.0. La identidad visual y marcas de los proyectos originales pertenecen a sus respectivos titulares. Este fork no está afiliado ni respaldado por LineageOS, HeliBoard ni el mantenedor original de FrostKeys.

@@ -105,6 +105,14 @@ private object AppUpgrade {
     fun onUpgrade(context: Context, restoredDefaultBackupForFreshInstall: Boolean) {
         val prefs = context.prefs()
         val oldVersion = prefs.getInt(Settings.PREF_VERSION_CODE, 0)
+        prefs.edit {
+            listOf(
+                "pref_enable_cloud_features", "pref_test_connection", "pref_gemini_api_key", "pref_klipy_api_key",
+                "pref_cached_gemini_models", "pref_gemini_models_last_fetch", "send_gifs_as_stickers",
+                "klipy_customer_id", "klipy_history_long_press_hint_dismissed",
+                "klipy_recent_searches_gif", "klipy_recent_searches_sticker"
+            ).forEach(::remove)
+        }
         // clear extracted dictionaries, in case updated version contains newer ones
         DictionaryInfoUtils.getCacheDirectories(context).forEach {
             for (file in it.listFiles()!!) {
