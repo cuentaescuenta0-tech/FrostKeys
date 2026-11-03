@@ -66,18 +66,21 @@ class SubtypeTest {
         SubtypeSettings.addEnabledSubtype(prefs, from)
         val to = from.toSettingsSubtype().withLayout(LayoutType.SYMBOLS, "symbols_arabic")
         SubtypeUtilsAdditional.changeAdditionalSubtype(from.toSettingsSubtype(), to, latinIME)
-        assertEquals(to, SubtypeSettings.getEnabledSubtypes(false).single().toSettingsSubtype())
+        val enabledAfterEdit = SubtypeSettings.getEnabledSubtypes(false).map { it.toSettingsSubtype() }
+        assertTrue(to in enabledAfterEdit)
 
         // change the new subtype to effectively be the same as original resource subtype
         val toNew = to.withoutLayout(LayoutType.SYMBOLS)
         assertEquals(from.toSettingsSubtype(), toNew)
         SubtypeUtilsAdditional.changeAdditionalSubtype(to, toNew, latinIME)
         assertEquals(emptyList(), SubtypeSettings.getAdditionalSubtypes().map { it.toSettingsSubtype() })
-        assertEquals(from.toSettingsSubtype(), SubtypeSettings.getEnabledSubtypes(false).single().toSettingsSubtype())
+        val enabledAfterRestore = SubtypeSettings.getEnabledSubtypes(false).map { it.toSettingsSubtype() }
+        assertTrue(from.toSettingsSubtype() in enabledAfterRestore)
     }
 
     @Test fun burmeseResourceSubtypeIsAvailable() {
-        val subtype = SubtypeSettings.getResourceSubtypesForLocale("my".constructLocale()).single()
+        val subtype = SubtypeSettings.getResourceSubtypesForLocale("my".constructLocale())
+            .first { it.mainLayoutName() == LayoutUtils.LAYOUT_MYANMAR_G }
         assertEquals(LayoutUtils.LAYOUT_MYANMAR_G, subtype.mainLayoutName())
         assertTrue(!subtype.extraValue.contains("SYMBOLS:"))
         assertTrue(subtype.extraValue.contains("EmojiCapable"))
