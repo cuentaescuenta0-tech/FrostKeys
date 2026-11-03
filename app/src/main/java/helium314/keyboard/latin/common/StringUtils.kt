@@ -246,7 +246,7 @@ fun mightBeEmoji(text: CharSequence): Boolean {
 fun isEmoji(c: Int): Boolean = mightBeEmoji(c) && isEmoji(newSingleCodePointString(c))
 
 /** returns whether the text is a single emoji */
-fun isEmoji(text: CharSequence): Boolean = text.toString().isSingleGrapheme && mightBeEmoji(text) && text.matches(emoRegex)
+fun isEmoji(text: CharSequence): Boolean = mightBeEmoji(text) && text.matches(emoRegex)
 
 // from https://github.com/chattymin/Pebble/blob/main/pebble/src/main/java/com/chattymin/pebble/LocalBreakIterator.kt, Apache-2.0 license
 // there is more potentially useful code like String.graphemeLength (should be graphemeCount though)
