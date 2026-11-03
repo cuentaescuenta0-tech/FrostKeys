@@ -1,2 +1,3 @@
 include ':app'
+include ':lineage-ime-core'
 include ':tools:make-emoji-keys'
