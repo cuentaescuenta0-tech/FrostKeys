@@ -47,7 +47,9 @@ jobs:
         run: |
           apk="$(find app/build/outputs/apk/debug -type f -name '*.apk' -print -quit)"
           test -n "$apk"
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" \
+          badging="$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk")"
+          printf '%s\n' "$badging" | grep -F "sdkVersion:'30'"
+          printf '%s\n' "$badging" \
             | grep -F "package: name='com.orion.frostkeys.lineage.debug'"
           if "$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$apk" \
             | grep -Fq "android.permission.INTERNET"; then

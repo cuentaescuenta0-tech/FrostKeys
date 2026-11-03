@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId = "com.orion.frostkeys.lineage"
-        minSdk = 24
+        minSdk = 30
         targetSdk = 36
         versionCode = providers.of(GitCommitCountValueSource::class.java) {}.get()
         versionName = "0.1.0-lineage"

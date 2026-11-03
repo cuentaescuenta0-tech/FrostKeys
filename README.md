@@ -2,7 +2,7 @@
 
 Este repositorio es un fork de desarrollo no oficial de [FrostKeys](https://github.com/AshwinSoni-01/FrostKeys). El objetivo es migrar el núcleo del teclado a [AOSP LatinIME mantenido por LineageOS](https://github.com/LineageOS/android_packages_inputmethods_LatinIME), conservando las funciones locales de FrostKeys que puedan portarse.
 
-> **Estado:** trabajo en curso. Esta rama ya retira Gemini y Klipy, pero el port completo del núcleo a LatinIME de LineageOS todavía requiere integración y validación. No debe considerarse una versión final ni sustituye la aplicación original.
+> **Estado:** trabajo en curso. Se aprobó Android 11+ (minSdk 30) para seguir la base LineageOS LatinIME; el núcleo aún requiere integración y validación. Gemini y Klipy permanecen retirados. No debe considerarse una versión final ni sustituye la aplicación original.
 
 ## Funciones que se busca conservar
 
