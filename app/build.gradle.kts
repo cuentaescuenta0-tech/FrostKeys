@@ -67,6 +67,7 @@ android {
             isJniDebuggable = false
         }
         create("nouserlib") { // same as release, but does not allow the user to provide a library
+            matchingFallbacks += listOf("release")
             isMinifyEnabled = true
             isShrinkResources = false
             isDebuggable = false
@@ -79,11 +80,13 @@ android {
             isJniDebuggable = false
             applicationIdSuffix = ".debug"
         }
-        create("runTests") { // build variant for running tests on CI that skips tests known to fail
+        create("runTests") { // build variant for running tests known to fail
+            matchingFallbacks += listOf("debug")
             isMinifyEnabled = false
             isJniDebuggable = false
         }
         create("debugNoMinify") { // for faster builds in IDE
+            matchingFallbacks += listOf("debug")
             isDebuggable = true
             isMinifyEnabled = false
             isJniDebuggable = false

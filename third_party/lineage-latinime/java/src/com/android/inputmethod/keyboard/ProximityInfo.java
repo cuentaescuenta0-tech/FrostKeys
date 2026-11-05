@@ -58,7 +58,8 @@ public class ProximityInfo {
     private final List<Key>[] mGridNeighbors;
 
     @SuppressWarnings("unchecked")
-    ProximityInfo(final int gridWidth, final int gridHeight, final int minWidth, final int height,
+    // Keep this constructor public for the FrostKeys/HeliBoard keyboard bridge.
+    public ProximityInfo(final int gridWidth, final int gridHeight, final int minWidth, final int height,
             final int mostCommonKeyWidth, final int mostCommonKeyHeight,
             @Nonnull final List<Key> sortedKeys,
             @Nonnull final TouchPositionCorrection touchPositionCorrection) {
