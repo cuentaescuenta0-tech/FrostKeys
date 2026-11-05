@@ -71,7 +71,6 @@
     <string name="subtype_hebrew_1452_2" translatable="false">%s (1452-2)</string>
 
     <string name="english_ime_name" translatable="false">FrostKeys Lineage</string>
-    <string name="frostkeys_classic_ime_name" translatable="false">FrostKeys Classic</string>
     <string name="frostkeys_lineage_ime_name" translatable="false">FrostKeys LatinIME</string>
     <!-- App slogan-->
     <string name="app_slogan" translatable="false">100% FOSS keyboard, based on AOSP.</string>

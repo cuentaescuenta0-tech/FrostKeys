@@ -51,7 +51,7 @@ fun SettingsSubtype.withMainLayoutAndLocaleDefaults(layoutName: String): Setting
 
 fun getResourceSubtypes(resources: Resources): List<InputMethodSubtype> {
     val subtypes = mutableListOf<InputMethodSubtype>()
-    val xml = resources.getXml(R.xml.method)
+    val xml = resources.getXml(R.xml.method_lineage)
     xml.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true)
     val namespace = "http://schemas.android.com/apk/res/android"
     var eventType = xml.eventType
@@ -61,7 +61,7 @@ fun getResourceSubtypes(resources: Resources): List<InputMethodSubtype> {
             val label = xml.getAttributeResourceValue(namespace, "label", 0)
             val subtypeId = xml.getAttributeIntValue(namespace, "subtypeId", 0)
             val localeString = xml.getAttributeValue(namespace, "imeSubtypeLocale").intern()
-            val languageTag = xml.getAttributeValue(namespace, "languageTag").intern()
+            val languageTag = xml.getAttributeValue(namespace, "languageTag")?.intern() ?: ""
             val imeSubtypeMode = xml.getAttributeValue(namespace, "imeSubtypeMode")
             val imeSubtypeExtraValue = xml.getAttributeValue(namespace, "imeSubtypeExtraValue").intern()
             val isAsciiCapable = xml.getAttributeBooleanValue(namespace, "isAsciiCapable", false)

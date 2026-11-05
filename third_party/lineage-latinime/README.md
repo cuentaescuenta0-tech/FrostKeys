@@ -8,5 +8,6 @@ Build compatibility adaptations:
 
 - LatinIME's keyboard-theme `themeId` attr uses a different enum domain from FrostKeys. The vendored LatinIME attr and its Java/XML references are named `lineageThemeId` to avoid Android resource-merger collisions; numeric theme values are unchanged.
 - Upstream resource XML uses the package URI `res/com.android.inputmethod.latin` from its standalone app build. The library build makes a generated copy with that URI rewritten to `res-auto`; the vendored source snapshot remains untouched by this conversion.
+- The app currently registers the LineageOS `LatinIME` as its only input-method service. Temporary compatibility adapters bridge selected FrostKeys/HeliBoard types while the migration is completed; they do not provide a second IME engine.
 
 Upstream repository: https://github.com/LineageOS/android_packages_inputmethods_LatinIME

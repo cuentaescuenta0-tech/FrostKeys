@@ -52,9 +52,15 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
             final float[] inOutWeightOfLangModelVsSpatialModel) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.getSuggestions(composedData, ngramContext,
-                        proximityInfoHandle, settingsValuesForSuggestion, sessionId,
-                        weightForLocale, inOutWeightOfLangModelVsSpatialModel);
+                final ArrayList<com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo>
+                        lineageSuggestions = mBinaryDictionary.getSuggestions(
+                                LineageDictionaryAdapter.toLineage(composedData),
+                                LineageDictionaryAdapter.toLineage(ngramContext),
+                                proximityInfoHandle,
+                                LineageDictionaryAdapter.toLineage(settingsValuesForSuggestion),
+                                sessionId, weightForLocale,
+                                inOutWeightOfLangModelVsSpatialModel);
+                return LineageDictionaryAdapter.toFrostKeys(lineageSuggestions, this);
             } finally {
                 mLock.readLock().unlock();
             }
@@ -78,7 +84,8 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     public boolean shouldAutoCommit(final SuggestedWordInfo candidate) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.shouldAutoCommit(candidate);
+                return mBinaryDictionary.shouldAutoCommit(
+                        LineageDictionaryAdapter.toLineage(candidate));
             } finally {
                 mLock.readLock().unlock();
             }
@@ -114,7 +121,8 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     public WordProperty getWordProperty(String word, boolean isBeginningOfSentence) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.getWordProperty(word, isBeginningOfSentence);
+                return LineageDictionaryAdapter.toFrostKeys(
+                        mBinaryDictionary.getWordProperty(word, isBeginningOfSentence));
             } finally {
                 mLock.readLock().unlock();
             }

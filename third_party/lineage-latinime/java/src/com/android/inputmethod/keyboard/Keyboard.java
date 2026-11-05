@@ -94,7 +94,7 @@ public class Keyboard {
     private final SparseArray<Key> mKeyCache = new SparseArray<>();
 
     @Nonnull
-    private final ProximityInfo mProximityInfo;
+    private final ProximityInfo<Key> mProximityInfo;
     @Nonnull
     private final KeyboardLayout mKeyboardLayout;
 
@@ -166,7 +166,7 @@ public class Keyboard {
     }
 
     @Nonnull
-    public ProximityInfo getProximityInfo() {
+    public ProximityInfo<Key> getProximityInfo() {
         return mProximityInfo;
     }
 

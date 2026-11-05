@@ -14,14 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import helium314.keyboard.latin.SuggestedWords.SuggestedWordInfo;
 import helium314.keyboard.latin.common.ComposedData;
 import helium314.keyboard.latin.common.FileUtils;
 import helium314.keyboard.latin.define.DecoderSpecificConstants;
-import helium314.keyboard.latin.makedict.DictionaryHeader;
 import helium314.keyboard.latin.makedict.FormatSpec;
-import helium314.keyboard.latin.makedict.UnsupportedFormatException;
 import helium314.keyboard.latin.makedict.WordProperty;
 import helium314.keyboard.latin.settings.SettingsValuesForSuggestion;
 import helium314.keyboard.latin.utils.AsyncResultHolder;
@@ -320,7 +320,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
 
     protected void addNgramEntryLocked(@NonNull final NgramContext ngramContext, final String word,
             final int frequency, final int timestamp) {
-        if (!mBinaryDictionary.addNgramEntry(ngramContext, word, frequency, timestamp)) {
+        if (!mBinaryDictionary.addNgramEntry(
+                LineageDictionaryAdapter.toLineage(ngramContext), word, frequency, timestamp)) {
             if (DEBUG) {
                 Log.i(TAG, "Cannot add n-gram entry.");
                 Log.i(TAG, "  NgramContext: " + ngramContext + ", word: " + word);
@@ -338,8 +339,9 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             if (binaryDictionary == null) {
                 return;
             }
-            if (!binaryDictionary.updateEntriesForWordWithNgramContext(ngramContext, word,
-                    isValidWord, count, timestamp)) {
+            if (!binaryDictionary.updateEntriesForWordWithNgramContext(
+                    LineageDictionaryAdapter.toLineage(ngramContext), word, isValidWord, count,
+                    timestamp)) {
                 if (DEBUG) {
                     Log.e(TAG, "Cannot update counter. word: " + word
                             + " context: " + ngramContext);
@@ -362,16 +364,20 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 if (mBinaryDictionary == null) {
                     return null;
                 }
-                final ArrayList<SuggestedWordInfo> suggestions =
-                        mBinaryDictionary.getSuggestions(composedData, ngramContext,
-                                proximityInfoHandle, settingsValuesForSuggestion, sessionId,
-                                weightForLocale, inOutWeightOfLangModelVsSpatialModel);
+                final ArrayList<com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo>
+                        lineageSuggestions = mBinaryDictionary.getSuggestions(
+                                LineageDictionaryAdapter.toLineage(composedData),
+                                LineageDictionaryAdapter.toLineage(ngramContext),
+                                proximityInfoHandle,
+                                LineageDictionaryAdapter.toLineage(settingsValuesForSuggestion),
+                                sessionId, weightForLocale,
+                                inOutWeightOfLangModelVsSpatialModel);
                 if (mBinaryDictionary.isCorrupted()) {
                     Log.i(TAG, "Dictionary (" + mDictName +") is corrupted. "
                             + "Remove and regenerate it.");
                     removeBinaryDictionary();
                 }
-                return suggestions;
+                return LineageDictionaryAdapter.toFrostKeys(lineageSuggestions, this);
             }
         } catch (final InterruptedException e) {
             Log.e(TAG, "Interrupted tryLock() in getSuggestionsWithSessionId().", e);
@@ -599,7 +605,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             do {
                 final BinaryDictionary.GetNextWordPropertyResult result =
                         binaryDictionary.getNextWordProperty(token);
-                final WordProperty wordProperty = result.mWordProperty;
+                final com.android.inputmethod.latin.makedict.WordProperty wordProperty =
+                        result.mWordProperty;
                 if (wordProperty == null) {
                     Log.d(tag, " dictionary is empty.");
                     break;
@@ -628,7 +635,8 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
                 // TODO: We need a new API that returns *new* un-synced data.
                 final BinaryDictionary.GetNextWordPropertyResult nextWordPropertyResult =
                         binaryDictionary.getNextWordProperty(token);
-                final WordProperty wordProperty = nextWordPropertyResult.mWordProperty;
+                final WordProperty wordProperty = LineageDictionaryAdapter.toFrostKeys(
+                        nextWordPropertyResult.mWordProperty);
                 if (wordProperty == null) {
                     break;
                 }

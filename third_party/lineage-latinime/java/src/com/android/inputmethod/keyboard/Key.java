@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
-public class Key implements Comparable<Key> {
+public class Key implements Comparable<Key>, ProximityInfoKey {
     /**
      * The key code (unicode or custom code) that this key generates.
      */

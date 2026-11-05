@@ -11,6 +11,8 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.ProximityInfoKey;
+
 import helium314.keyboard.keyboard.internal.KeyDrawParams;
 import helium314.keyboard.keyboard.internal.KeySpecParser;
 import helium314.keyboard.keyboard.internal.KeyVisualAttributes;
@@ -35,7 +37,7 @@ import androidx.annotation.Nullable;
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
-public class Key implements Comparable<Key> {
+public class Key implements Comparable<Key>, ProximityInfoKey {
     /**
      * The key code (unicode or custom code) that this key generates.
      */

@@ -120,6 +120,72 @@ public final class WordProperty implements Comparable<WordProperty> {
         }
     }
 
+    private WordProperty(final String word, final ProbabilityInfo probabilityInfo,
+            final ArrayList<WeightedString> shortcutTargets,
+            final ArrayList<NgramProperty> ngrams, final boolean isBeginningOfSentence,
+            final boolean isNotAWord, final boolean isPossiblyOffensive,
+            final boolean hasNgrams, final boolean hasShortcuts) {
+        mWord = word;
+        mProbabilityInfo = probabilityInfo;
+        mShortcutTargets = shortcutTargets;
+        mNgrams = ngrams;
+        mIsBeginningOfSentence = isBeginningOfSentence;
+        mIsNotAWord = isNotAWord;
+        mIsPossiblyOffensive = isPossiblyOffensive;
+        mHasNgrams = hasNgrams;
+        mHasShortcuts = hasShortcuts;
+    }
+
+    /** Converts the upstream LineageOS dictionary property without dropping n-gram context. */
+    public static WordProperty fromLineage(
+            final com.android.inputmethod.latin.makedict.WordProperty source) {
+        final ProbabilityInfo probabilityInfo = fromLineage(source.mProbabilityInfo);
+        final ArrayList<WeightedString> shortcutTargets = new ArrayList<>();
+        for (final com.android.inputmethod.latin.makedict.WeightedString shortcut
+                : source.mShortcutTargets) {
+            shortcutTargets.add(new WeightedString(shortcut.mWord,
+                    fromLineage(shortcut.mProbabilityInfo)));
+        }
+
+        ArrayList<NgramProperty> ngrams = null;
+        if (source.mNgrams != null) {
+            ngrams = new ArrayList<>(source.mNgrams.size());
+            for (final com.android.inputmethod.latin.makedict.NgramProperty ngram
+                    : source.mNgrams) {
+                final com.android.inputmethod.latin.NgramContext upstreamContext =
+                        ngram.mNgramContext;
+                final WordInfo[] previousWords =
+                        new WordInfo[upstreamContext.getPrevWordCount()];
+                for (int i = 0; i < previousWords.length; i++) {
+                    final int oneBasedIndex = i + 1;
+                    final CharSequence previousWord =
+                            upstreamContext.getNthPrevWord(oneBasedIndex);
+                    if (upstreamContext.isNthPrevWordBeginningOfSentence(oneBasedIndex)) {
+                        previousWords[i] = WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO;
+                    } else if (previousWord == null) {
+                        previousWords[i] = WordInfo.EMPTY_WORD_INFO;
+                    } else {
+                        previousWords[i] = new WordInfo(previousWord);
+                    }
+                }
+                final NgramContext context = new NgramContext(previousWords);
+                final WeightedString target = new WeightedString(ngram.mTargetWord.mWord,
+                        fromLineage(ngram.mTargetWord.mProbabilityInfo));
+                ngrams.add(new NgramProperty(target, context));
+            }
+        }
+
+        return new WordProperty(source.mWord, probabilityInfo, shortcutTargets, ngrams,
+                source.mIsBeginningOfSentence, source.mIsNotAWord,
+                source.mIsPossiblyOffensive, source.mHasNgrams, source.mHasShortcuts);
+    }
+
+    private static ProbabilityInfo fromLineage(
+            final com.android.inputmethod.latin.makedict.ProbabilityInfo source) {
+        return new ProbabilityInfo(source.mProbability, source.mTimestamp, source.mLevel,
+                source.mCount);
+    }
+
     // TODO: Remove
     public ArrayList<WeightedString> getBigrams() {
         if (null == mNgrams) {
@@ -175,7 +241,7 @@ public final class WordProperty implements Comparable<WordProperty> {
         return mProbabilityInfo.equals(w.mProbabilityInfo) && mWord.equals(w.mWord)
                 && mShortcutTargets.equals(w.mShortcutTargets) && equals(mNgrams, w.mNgrams)
                 && mIsNotAWord == w.mIsNotAWord && mIsPossiblyOffensive == w.mIsPossiblyOffensive
-                && mHasNgrams == w.mHasNgrams && mHasShortcuts && w.mHasNgrams;
+                && mHasNgrams == w.mHasNgrams && mHasShortcuts == w.mHasShortcuts;
     }
 
     // TDOO: Have a utility method like java.util.Objects.equals.

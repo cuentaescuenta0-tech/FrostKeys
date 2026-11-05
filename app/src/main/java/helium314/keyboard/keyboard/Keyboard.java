@@ -87,7 +87,7 @@ public class Keyboard {
     private final SparseArray<Key> mKeyCache = new SparseArray<>();
 
     @NonNull
-    private final ProximityInfo mProximityInfo;
+    private final ProximityInfo<Key> mProximityInfo;
 
     private final boolean mProximityCharsCorrectionEnabled;
 

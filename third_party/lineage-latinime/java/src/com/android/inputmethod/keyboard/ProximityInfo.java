@@ -30,7 +30,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class ProximityInfo {
+public class ProximityInfo<T extends ProximityInfoKey> {
     private static final String TAG = ProximityInfo.class.getSimpleName();
     private static final boolean DEBUG = false;
 
@@ -38,8 +38,6 @@ public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static final float SEARCH_DISTANCE = 1.2f;
-    @Nonnull
-    private static final List<Key> EMPTY_KEY_LIST = Collections.emptyList();
     private static final float DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS = 0.15f;
 
     private final int mGridWidth;
@@ -53,15 +51,15 @@ public class ProximityInfo {
     private final int mMostCommonKeyWidth;
     private final int mMostCommonKeyHeight;
     @Nonnull
-    private final List<Key> mSortedKeys;
+    private final List<T> mSortedKeys;
     @Nonnull
-    private final List<Key>[] mGridNeighbors;
+    private final List<T>[] mGridNeighbors;
 
     @SuppressWarnings("unchecked")
     // Keep this constructor public for the FrostKeys/HeliBoard keyboard bridge.
     public ProximityInfo(final int gridWidth, final int gridHeight, final int minWidth, final int height,
             final int mostCommonKeyWidth, final int mostCommonKeyHeight,
-            @Nonnull final List<Key> sortedKeys,
+            @Nonnull final List<T> sortedKeys,
             @Nonnull final TouchPositionCorrection touchPositionCorrection) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
@@ -96,14 +94,15 @@ public class ProximityInfo {
 
     private static native void releaseProximityInfoNative(long nativeProximityInfo);
 
-    static boolean needsProximityInfo(final Key key) {
+    static boolean needsProximityInfo(final ProximityInfoKey key) {
         // Don't include special keys into ProximityInfo.
         return key.getCode() >= Constants.CODE_SPACE;
     }
 
-    private static int getProximityInfoKeysCount(final List<Key> keys) {
+    private static int getProximityInfoKeysCount(
+            final List<? extends ProximityInfoKey> keys) {
         int count = 0;
-        for (final Key key : keys) {
+        for (final ProximityInfoKey key : keys) {
             if (needsProximityInfo(key)) {
                 count++;
             }
@@ -113,15 +112,15 @@ public class ProximityInfo {
 
     private long createNativeProximityInfo(
             @Nonnull final TouchPositionCorrection touchPositionCorrection) {
-        final List<Key>[] gridNeighborKeys = mGridNeighbors;
+        final List<T>[] gridNeighborKeys = mGridNeighbors;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
-            final List<Key> neighborKeys = gridNeighborKeys[i];
+            final List<T> neighborKeys = gridNeighborKeys[i];
             final int proximityCharsLength = neighborKeys.size();
             int infoIndex = i * MAX_PROXIMITY_CHARS_SIZE;
             for (int j = 0; j < proximityCharsLength; ++j) {
-                final Key neighborKey = neighborKeys.get(j);
+                final T neighborKey = neighborKeys.get(j);
                 // Excluding from proximityCharsArray
                 if (!needsProximityInfo(neighborKey)) {
                     continue;
@@ -146,7 +145,7 @@ public class ProximityInfo {
             }
         }
 
-        final List<Key> sortedKeys = mSortedKeys;
+        final List<T> sortedKeys = mSortedKeys;
         final int keyCount = getProximityInfoKeysCount(sortedKeys);
         final int[] keyXCoordinates = new int[keyCount];
         final int[] keyYCoordinates = new int[keyCount];
@@ -158,7 +157,7 @@ public class ProximityInfo {
         final float[] sweetSpotRadii;
 
         for (int infoIndex = 0, keyIndex = 0; keyIndex < sortedKeys.size(); keyIndex++) {
-            final Key key = sortedKeys.get(keyIndex);
+            final T key = sortedKeys.get(keyIndex);
             // Excluding from key coordinate arrays
             if (!needsProximityInfo(key)) {
                 continue;
@@ -182,7 +181,7 @@ public class ProximityInfo {
             final float defaultRadius = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
                     * (float)Math.hypot(mMostCommonKeyWidth, mMostCommonKeyHeight);
             for (int infoIndex = 0, keyIndex = 0; keyIndex < sortedKeys.size(); keyIndex++) {
-                final Key key = sortedKeys.get(keyIndex);
+                final T key = sortedKeys.get(keyIndex);
                 // Excluding from touch position correction arrays
                 if (!needsProximityInfo(key)) {
                     continue;
@@ -242,6 +241,7 @@ public class ProximityInfo {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void computeNearestNeighbors() {
         final int defaultWidth = mMostCommonKeyWidth;
         final int keyCount = mSortedKeys.size();
@@ -259,11 +259,12 @@ public class ProximityInfo {
         // start empty with keycount spaces available. This fills up gradually in the loop below.
         // Since in the practice each cell does not have a lot of neighbors, most of this space is
         // actually just empty padding in this fixed-size buffer.
-        final Key[] neighborsFlatBuffer = new Key[gridSize * keyCount];
+        final ProximityInfoKey[] neighborsFlatBuffer =
+                new ProximityInfoKey[gridSize * keyCount];
         final int[] neighborCountPerCell = new int[gridSize];
         final int halfCellWidth = mCellWidth / 2;
         final int halfCellHeight = mCellHeight / 2;
-        for (final Key key : mSortedKeys) {
+        for (final T key : mSortedKeys) {
             if (key.isSpacer()) continue;
 
 /* HOW WE PRE-SELECT THE CELLS (iterate over only the relevant cells, instead of all of them)
@@ -359,9 +360,9 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         for (int i = 0; i < gridSize; ++i) {
             final int indexStart = i * keyCount;
             final int indexEnd = indexStart + neighborCountPerCell[i];
-            final ArrayList<Key> neighbors = new ArrayList<>(indexEnd - indexStart);
+            final ArrayList<T> neighbors = new ArrayList<>(indexEnd - indexStart);
             for (int index = indexStart; index < indexEnd; index++) {
-                neighbors.add(neighborsFlatBuffer[index]);
+                neighbors.add((T) neighborsFlatBuffer[index]);
             }
             mGridNeighbors[i] = Collections.unmodifiableList(neighbors);
         }
@@ -377,8 +378,8 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
         if (primaryKeyCode > Constants.CODE_SPACE) {
             dest[index++] = primaryKeyCode;
         }
-        final List<Key> nearestKeys = getNearestKeys(x, y);
-        for (Key key : nearestKeys) {
+        final List<T> nearestKeys = getNearestKeys(x, y);
+        for (T key : nearestKeys) {
             if (index >= destLength) {
                 break;
             }
@@ -394,13 +395,13 @@ y |---+---+---+---+-v-+-|-+---+---+---+---+---|          | thresholdBase and get
     }
 
     @Nonnull
-    public List<Key> getNearestKeys(final int x, final int y) {
+    public List<T> getNearestKeys(final int x, final int y) {
         if (x >= 0 && x < mKeyboardMinWidth && y >= 0 && y < mKeyboardHeight) {
             int index = (y / mCellHeight) * mGridWidth + (x / mCellWidth);
             if (index < mGridSize) {
                 return mGridNeighbors[index];
             }
         }
-        return EMPTY_KEY_LIST;
+        return Collections.emptyList();
     }
 }

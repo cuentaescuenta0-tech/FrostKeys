@@ -27,20 +27,7 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
             tools:remove="android:appComponentFactory"
             tools:targetApi="p">
 
-        <!-- Services -->
-        <!-- Preserve the full FrostKeys/Heli keyboard while Lineage feature parity is ported. -->
-        <service android:name="LatinIME"
-                android:label="@string/frostkeys_classic_ime_name"
-                android:permission="android.permission.BIND_INPUT_METHOD"
-                android:directBootAware="true"
-                android:exported="true">
-            <intent-filter>
-                <action android:name="android.view.InputMethod" />
-            </intent-filter>
-            <meta-data android:name="android.view.im" android:resource="@xml/method" />
-        </service>
-
-        <!-- New LineageOS LatinIME service with the upstream subtype/resource set. -->
+        <!-- The fork uses LineageOS LatinIME as its only input-method engine. -->
         <service android:name="com.android.inputmethod.latin.LatinIME"
                 android:label="@string/frostkeys_lineage_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD"
