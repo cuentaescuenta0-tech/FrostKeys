@@ -51,7 +51,9 @@ fun SettingsSubtype.withMainLayoutAndLocaleDefaults(layoutName: String): Setting
 
 fun getResourceSubtypes(resources: Resources): List<InputMethodSubtype> {
     val subtypes = mutableListOf<InputMethodSubtype>()
-    val xml = resources.getXml(R.xml.method_lineage)
+    // This legacy catalog is still used by FrostKeys settings and migration utilities.
+    // The active Lineage IME loads its independent subtype list from method_lineage.xml.
+    val xml = resources.getXml(R.xml.method)
     xml.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true)
     val namespace = "http://schemas.android.com/apk/res/android"
     var eventType = xml.eventType
