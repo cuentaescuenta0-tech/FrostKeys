@@ -9,6 +9,7 @@ package helium314.keyboard.latin.dictionary;
 import com.android.inputmethod.latin.BinaryDictionary;
 
 import helium314.keyboard.latin.NgramContext;
+import helium314.keyboard.latin.utils.DictionaryHash;
 import helium314.keyboard.latin.SuggestedWords.SuggestedWordInfo;
 import helium314.keyboard.latin.common.ComposedData;
 import helium314.keyboard.latin.makedict.WordProperty;
@@ -132,6 +133,6 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     }
 
     public String getHash() {
-        return mBinaryDictionary.getHash();
+        return DictionaryHash.getHash(mBinaryDictionary);
     }
 }

@@ -8,16 +8,19 @@ package helium314.keyboard.latin.utils
 import android.content.Context
 import android.text.TextUtils
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException as LineageUnsupportedFormatException
 import helium314.keyboard.latin.dictionary.Dictionary
 import helium314.keyboard.latin.common.FileUtils
 import helium314.keyboard.latin.common.LocaleUtils.constructLocale
 import helium314.keyboard.latin.common.loopOverCodePoints
 import helium314.keyboard.latin.define.DecoderSpecificConstants
 import helium314.keyboard.latin.makedict.DictionaryHeader
+import helium314.keyboard.latin.makedict.FormatSpec.DictionaryOptions
 import helium314.keyboard.latin.makedict.UnsupportedFormatException
 import helium314.keyboard.latin.settings.SpacingAndPunctuations
 import java.io.File
 import java.io.IOException
+import java.util.HashMap
 import java.util.Locale
 
 /** encapsulates the logic for the Latin-IME side of dictionary information management */
@@ -117,7 +120,12 @@ object DictionaryInfoUtils {
 
     fun getDictionaryFileHeaderOrNull(file: File): DictionaryHeader? {
         return try {
-            BinaryDictionaryUtils.getHeader(file)
+            val lineageHeader = BinaryDictionaryUtils.getHeader(file)
+            DictionaryHeader(
+                DictionaryOptions(HashMap(lineageHeader.mDictionaryOptions.mAttributes))
+            )
+        } catch (_: LineageUnsupportedFormatException) {
+            null
         } catch (_: UnsupportedFormatException) {
             null
         } catch (_: IOException) {

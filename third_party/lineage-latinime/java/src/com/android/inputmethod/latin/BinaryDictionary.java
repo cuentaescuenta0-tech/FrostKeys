@@ -264,6 +264,11 @@ public final class BinaryDictionary extends Dictionary {
                 new FormatSpec.FormatOptions(outFormatVersion[0], hasHistoricalInfo));
     }
 
+    /** Exposes the local dictionary file path to FrostKeys' on-device checksum adapter. */
+    public String getDictionaryFilePath() {
+        return mDictFilePath;
+    }
+
     @Override
     public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
             final NgramContext ngramContext, final long proximityInfoHandle,

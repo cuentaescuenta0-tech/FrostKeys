@@ -98,7 +98,8 @@ class WordData(
                 else context.protectedPrefs().getString(Settings.PREF_LIBRARY_CHECKSUM, "") == JniUtils.expectedDefaultChecksum(),
             targetWord,
             dictionariesInSuggestions.map {
-                val hash = (it as? BinaryDictionary)?.hash ?: (it as? ReadOnlyBinaryDictionary)?.hash
+                val hash = (it as? BinaryDictionary)?.let(DictionaryHash::getHash)
+                    ?: (it as? ReadOnlyBinaryDictionary)?.hash
                 DictInfo(hash, it.mDictType, it.mLocale?.toLanguageTag())
             },
             filteredSuggestions.map { Suggestion(it.mWord, it.mScore) },

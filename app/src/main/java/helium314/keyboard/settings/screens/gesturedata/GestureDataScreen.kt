@@ -89,6 +89,7 @@ import helium314.keyboard.latin.common.Links
 import helium314.keyboard.latin.common.LocaleUtils
 import helium314.keyboard.latin.common.LocaleUtils.constructLocale
 import helium314.keyboard.latin.dictionary.Dictionary
+import helium314.keyboard.latin.dictionary.ReadOnlyBinaryDictionary
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.ChecksumCalculator
 import helium314.keyboard.latin.utils.DictionaryInfoUtils
@@ -244,7 +245,7 @@ fun GestureDataScreen(
         LaunchedEffect(dict) {
             val dict = dict ?: return@LaunchedEffect
             gestureDataActiveFacilitator?.closeDictionaries()
-            gestureDataActiveFacilitator = SingleDictionaryFacilitator(dict.getDictionary(ctx))
+            gestureDataActiveFacilitator = SingleDictionaryFacilitator(dict.getFacilitatorDictionary(ctx))
             gestureDataActiveFacilitator?.suggestionLogger = suggestionLogger
             lastData = null
             wordFromDict = null
@@ -635,6 +636,7 @@ private interface DictWithInfo {
     val locale: Locale
     val internal: Boolean
     fun getDictionary(context: Context): BinaryDictionary
+    fun getFacilitatorDictionary(context: Context): Dictionary
     // not actually suspending, but makes clear that it shouldn't be called on UI thread (because it's slow)
     suspend fun addWords(context: Context, words: MutableList<Pair<String, Long>>) = getDictionary(context).addWords(words)
 }
@@ -646,6 +648,8 @@ private class CacheDictWithInfo(private val file: File): DictWithInfo {
     override val internal = !file.name.endsWith(DictionaryInfoUtils.USER_DICTIONARY_SUFFIX)
     override fun getDictionary(context: Context) =
         BinaryDictionary(file.absolutePath, 0, file.length(), false, locale, Dictionary.TYPE_MAIN, false)
+    override fun getFacilitatorDictionary(context: Context) =
+        ReadOnlyBinaryDictionary(file.absolutePath, 0, file.length(), false, locale, Dictionary.TYPE_MAIN)
 }
 
 private class AssetsDictWithInfo(private val name: String, context: Context): DictWithInfo {
@@ -655,6 +659,10 @@ private class AssetsDictWithInfo(private val name: String, context: Context): Di
     override fun getDictionary(context: Context): BinaryDictionary {
         val file = DictionaryInfoUtils.extractAssetsDictionary(name, locale, context)!!
         return BinaryDictionary(file.absolutePath, 0, file.length(), false, locale, Dictionary.TYPE_MAIN, false)
+    }
+    override fun getFacilitatorDictionary(context: Context): Dictionary {
+        val file = DictionaryInfoUtils.extractAssetsDictionary(name, locale, context)!!
+        return ReadOnlyBinaryDictionary(file.absolutePath, 0, file.length(), false, locale, Dictionary.TYPE_MAIN)
     }
 }
 
