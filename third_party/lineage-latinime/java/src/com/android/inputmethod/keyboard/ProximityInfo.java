@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard;
 import android.graphics.Rect;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.JniUtils;
 
@@ -60,7 +59,7 @@ public class ProximityInfo<T extends ProximityInfoKey> {
     public ProximityInfo(final int gridWidth, final int gridHeight, final int minWidth, final int height,
             final int mostCommonKeyWidth, final int mostCommonKeyHeight,
             @Nonnull final List<T> sortedKeys,
-            @Nonnull final TouchPositionCorrection touchPositionCorrection) {
+            @Nonnull final ProximityInfoTouchPositionCorrection touchPositionCorrection) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -111,7 +110,7 @@ public class ProximityInfo<T extends ProximityInfoKey> {
     }
 
     private long createNativeProximityInfo(
-            @Nonnull final TouchPositionCorrection touchPositionCorrection) {
+            @Nonnull final ProximityInfoTouchPositionCorrection touchPositionCorrection) {
         final List<T>[] gridNeighborKeys = mGridNeighbors;
         final int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
         Arrays.fill(proximityCharsArray, Constants.NOT_A_CODE);

@@ -8,7 +8,8 @@ package helium314.keyboard.keyboard.internal;
 
 import helium314.keyboard.latin.define.DebugFlags;
 
-public final class TouchPositionCorrection {
+public final class TouchPositionCorrection implements
+        com.android.inputmethod.keyboard.ProximityInfoTouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
 
     private boolean mEnabled;
