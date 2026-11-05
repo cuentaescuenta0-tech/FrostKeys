@@ -3,6 +3,20 @@ plugins {
 }
 
 val lineageIme = rootProject.file("third_party/lineage-latinime")
+val lineageResDir = layout.buildDirectory.dir("generated/lineage-ime-res")
+val prepareLineageImeResources = tasks.register<Sync>("prepareLineageImeResources") {
+    from(File(lineageIme, "java/res")) {
+        filesMatching("**/*.xml") {
+            filter { line ->
+                line.replace(
+                    "http://schemas.android.com/apk/res/com.android.inputmethod.latin",
+                    "http://schemas.android.com/apk/res-auto"
+                )
+            }
+        }
+    }
+    into(lineageResDir)
+}
 
 android {
     namespace = "com.android.inputmethod.latin"
@@ -30,13 +44,17 @@ android {
                     File(lineageIme, "java/src"),
                 )
             )
-            res.setSrcDirs(listOf(File(lineageIme, "java/res")))
+            res.setSrcDirs(listOf(lineageResDir))
         }
     }
 
     androidResources {
         noCompress += "dict"
     }
+}
+
+tasks.named("preBuild").configure {
+    dependsOn(prepareLineageImeResources)
 }
 
 dependencies {
