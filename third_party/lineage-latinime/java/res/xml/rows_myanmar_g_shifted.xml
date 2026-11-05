@@ -1,0 +1,56 @@
+<!-- SPDX-License-Identifier: GPL-3.0-only; adapted from FrostKeys Myanmar layout assets. -->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+  <include latin:keyboardLayout="@xml/key_styles_common" />
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="၁" />
+    <Key latin:keySpec="၂" />
+    <Key latin:keySpec="၃" />
+    <Key latin:keySpec="၄" />
+    <Key latin:keySpec="၅" />
+    <Key latin:keySpec="၆" />
+    <Key latin:keySpec="၇" />
+    <Key latin:keySpec="၈" />
+    <Key latin:keySpec="၉" />
+    <Key latin:keySpec="၀" />
+</Row>
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="ဍ" />
+    <Key latin:keySpec="ဏ္ဍ" />
+    <Key latin:keySpec="ဣ" />
+    <Key latin:keySpec="၎င်း" />
+    <Key latin:keySpec="ဤ" />
+    <Key latin:keySpec="၌" />
+    <Key latin:keySpec="ဥ" />
+    <Key latin:keySpec="၍" />
+    <Key latin:keySpec="ဿ" />
+    <Key latin:keySpec="ဏ" />
+</Row>
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="ဗ" />
+    <Key latin:keySpec="ှ" />
+    <Key latin:keySpec="ီ" />
+    <Key latin:keySpec="္" />
+    <Key latin:keySpec="ွ" />
+    <Key latin:keySpec="ံ" />
+    <Key latin:keySpec="ဲ" />
+    <Key latin:keySpec="ဒ" />
+    <Key latin:keySpec="ဓ" />
+    <Key latin:keySpec="ဏ္ဌ" />
+</Row>
+<Row latin:keyWidth="8.3333%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+  <Key latin:keyStyle="shiftKeyStyle" />
+  <Key latin:keySpec="ဇ" />
+  <Key latin:keySpec="ဌ" />
+  <Key latin:keySpec="ဃ" />
+  <Key latin:keySpec="ဠ" />
+  <Key latin:keySpec="ဎ" />
+  <Key latin:keySpec="ဉ" />
+  <Key latin:keySpec="ဦ" />
+  <Key latin:keySpec="ဧ" />
+  <Key latin:keySpec="," />
+  <Key latin:keySpec="." />
+  <Key latin:keyStyle="deleteKeyStyle" />
+</Row>
+  <include latin:keyboardLayout="@xml/row_qwerty4" />
+</merge>

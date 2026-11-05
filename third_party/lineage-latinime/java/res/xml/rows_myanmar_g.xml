@@ -1,0 +1,56 @@
+<!-- SPDX-License-Identifier: GPL-3.0-only; adapted from FrostKeys Myanmar layout assets. -->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin">
+  <include latin:keyboardLayout="@xml/key_styles_common" />
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="ဈ" latin:moreKeys="ဍ္ဎ" />
+    <Key latin:keySpec="ဝ" latin:moreKeys="ကျပ်" />
+    <Key latin:keySpec="ဋ" latin:moreKeys="ဋ္ဌ" />
+    <Key latin:keySpec="ုံ" latin:moreKeys="င်္" />
+    <Key latin:keySpec="ော" latin:moreKeys="ေါ" />
+    <Key latin:keySpec="ဪ" latin:moreKeys="ဩ" />
+    <Key latin:keySpec="ရ" latin:moreKeys="ၒ,ၓ" />
+    <Key latin:keySpec="ဂ" latin:moreKeys="ၔ,ၕ" />
+    <Key latin:keySpec="ဟ" latin:moreKeys="ၐ,ၑ" />
+    <Key latin:keySpec="၏" />
+</Row>
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="ဆ" />
+    <Key latin:keySpec="တ" />
+    <Key latin:keySpec="န" />
+    <Key latin:keySpec="မ" />
+    <Key latin:keySpec="အ" />
+    <Key latin:keySpec="ပ" />
+    <Key latin:keySpec="က" />
+    <Key latin:keySpec="င" />
+    <Key latin:keySpec="သ" />
+    <Key latin:keySpec="စ" />
+</Row>
+<Row latin:keyWidth="10.0000%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+    <Key latin:keySpec="ေ" />
+    <Key latin:keySpec="ျ" />
+    <Key latin:keySpec="ိ" />
+    <Key latin:keySpec="်" />
+    <Key latin:keySpec="ါ" />
+    <Key latin:keySpec="့" />
+    <Key latin:keySpec="ြ" />
+    <Key latin:keySpec="ု" />
+    <Key latin:keySpec="ူ" />
+    <Key latin:keySpec="း" />
+</Row>
+<Row latin:keyWidth="8.3333%p" latin:keyLabelFlags="fontNormal|autoScale|preserveCase">
+  <Key latin:keyStyle="shiftKeyStyle" />
+  <Key latin:keySpec="ဖ" />
+  <Key latin:keySpec="ထ" />
+  <Key latin:keySpec="ခ" />
+  <Key latin:keySpec="လ" />
+  <Key latin:keySpec="ဘ" />
+  <Key latin:keySpec="ည" />
+  <Key latin:keySpec="ာ" />
+  <Key latin:keySpec="ယ" />
+  <Key latin:keySpec="၊" />
+  <Key latin:keySpec="။" />
+  <Key latin:keyStyle="deleteKeyStyle" />
+</Row>
+  <include latin:keyboardLayout="@xml/row_qwerty4" />
+</merge>

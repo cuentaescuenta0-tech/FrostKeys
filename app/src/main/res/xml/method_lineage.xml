@@ -580,6 +580,22 @@
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="my_MM"
+            android:languageTag="my-MM"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar_g,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
+            android:imeSubtypeLocale="my_MM"
+            android:languageTag="my-MM"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=myanmar_basic,EmojiCapable"
+            android:isAsciiCapable="false"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_generic"
             android:subtypeId="0x84c87c61"
             android:imeSubtypeLocale="ms_MY"
             android:imeSubtypeMode="keyboard"
