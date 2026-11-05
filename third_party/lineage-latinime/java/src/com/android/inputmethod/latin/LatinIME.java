@@ -792,6 +792,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        ImeWindowEffectBridge.clear(this);
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -897,6 +898,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
+        ImeWindowEffectBridge.onInputViewChanged(this, view);
     }
 
     @Override
@@ -913,6 +915,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
         mHandler.onStartInputView(editorInfo, restarting);
         mStatsUtilsManager.onStartInputView();
+        ImeWindowEffectBridge.refresh(this, mInputView);
     }
 
     @Override
@@ -1159,11 +1162,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onWindowShown() {
         super.onWindowShown();
         updateNavigationBarColor();
+        ImeWindowEffectBridge.refresh(this, mInputView);
     }
 
     @Override
     public void onWindowHidden() {
         super.onWindowHidden();
+        ImeWindowEffectBridge.disable(this);
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();

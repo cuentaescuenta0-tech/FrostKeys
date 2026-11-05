@@ -45,6 +45,7 @@ import helium314.keyboard.keyboard.FrostedLiveValues
 import helium314.keyboard.keyboard.KeyboardTheme
 import helium314.keyboard.latin.R
 import helium314.keyboard.latin.LatinIME
+import com.android.inputmethod.latin.ImeWindowEffectBridge
 import helium314.keyboard.latin.settings.Defaults
 import helium314.keyboard.latin.settings.Settings
 import helium314.keyboard.latin.utils.prefs
@@ -134,6 +135,7 @@ fun FrostedGlassAdjustDialog(
             dustAlpha = profile.dustAlpha.coerceIn(1f, 10f)
         )
         LatinIME.getInstance()?.requestFrostedLivePreviewRefresh()
+        ImeWindowEffectBridge.refreshActive()
     }
 
     fun writeSnapshotToPrefs(values: FrostedSettingsSnapshot) {
@@ -161,6 +163,7 @@ fun FrostedGlassAdjustDialog(
     fun requestFinalFrostedSync() {
         LatinIME.getInstance()?.requestFrostedHardThemeReset()
             ?: prefs.edit().putLong(Settings.PREF_FROSTED_GLASS_TRIGGER, System.currentTimeMillis()).apply()
+        ImeWindowEffectBridge.refreshActive()
     }
 
     // Helper to update current profile in snapshot and redraw the keyboard from staged values.
@@ -725,4 +728,3 @@ fun FrostedGlassAdjustDialog(
         }
     }
 }
-

@@ -2,8 +2,12 @@
 package helium314.keyboard.latin
 
 import android.app.Application
+import android.content.Context
+import android.inputmethodservice.InputMethodService
 import android.os.Build
 import android.os.StrictMode
+import android.view.View
+import com.android.inputmethod.latin.ImeWindowEffectBridge
 import helium314.keyboard.keyboard.emoji.SupportedEmojis
 import helium314.keyboard.latin.define.DebugFlags
 import helium314.keyboard.latin.settings.Defaults
@@ -21,6 +25,14 @@ import kotlinx.coroutines.launch
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        ImeWindowEffectBridge.setController(object : ImeWindowEffectBridge.Controller {
+            override fun isEffectEnabled(context: Context): Boolean =
+                FrostedGlassHelper.isFrostedTheme(context)
+
+            override fun apply(service: InputMethodService, inputView: View?, enabled: Boolean) {
+                FrostedGlassHelper.configureFrostedGlass(service, inputView, enabled)
+            }
+        })
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(
                 StrictMode.VmPolicy.Builder()
