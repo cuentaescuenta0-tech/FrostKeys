@@ -49,7 +49,7 @@
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardTheme.THEME_ID_* -->
-        <item name="themeId">You</item>
+        <item name="lineageThemeId">You</item>
         <item name="verticalGap">@fraction/config_key_vertical_gap_you</item>
     </style>
     <style

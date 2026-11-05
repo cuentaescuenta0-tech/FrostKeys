@@ -235,7 +235,7 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
-        <attr name="themeId" format="enum">
+        <attr name="lineageThemeId" format="enum">
             <!-- This should be aligned with
                  {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
             <enum name="ICS" value="0" />

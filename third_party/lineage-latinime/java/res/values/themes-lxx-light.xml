@@ -36,7 +36,7 @@
         parent="Keyboard"
     >
         <!-- This should be aligned with KeyboardTheme.THEME_ID_* -->
-        <item name="themeId">LXXLight</item>
+        <item name="lineageThemeId">LXXLight</item>
     </style>
     <style
         name="KeyboardView.LXX_Light"

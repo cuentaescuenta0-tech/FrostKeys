@@ -279,7 +279,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mMaxMoreKeysKeyboardColumn = keyAttr.getInt(
                     R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
-            params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
+            params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_lineageThemeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
             params.mTextsSet.setLocale(params.mId.getLocale(), mContext);
 

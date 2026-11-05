@@ -28,8 +28,9 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
             tools:targetApi="p">
 
         <!-- Services -->
+        <!-- Preserve the full FrostKeys/Heli keyboard while Lineage feature parity is ported. -->
         <service android:name="LatinIME"
-                android:label="@string/english_ime_name"
+                android:label="@string/frostkeys_classic_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD"
                 android:directBootAware="true"
                 android:exported="true">
@@ -37,6 +38,19 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
+        </service>
+
+        <!-- New LineageOS LatinIME service with the upstream subtype/resource set. -->
+        <service android:name="com.android.inputmethod.latin.LatinIME"
+                android:label="@string/frostkeys_lineage_ime_name"
+                android:permission="android.permission.BIND_INPUT_METHOD"
+                android:directBootAware="true"
+                android:exported="true"
+                android:visibleToInstantApps="true">
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/method_lineage" />
         </service>
 
         <service android:name=".spellcheck.AndroidSpellCheckerService"
@@ -51,6 +65,11 @@ SPDX-License-Identifier: Apache-2.0 AND GPL-3.0-only
         </service>
 
         <!-- Activities -->
+        <activity android:name="com.android.inputmethod.latin.settings.SettingsActivity"
+                android:theme="@style/Theme.SettingsLib"
+                android:label="@string/english_ime_settings"
+                android:exported="true" />
+
         <activity android:name="helium314.keyboard.settings.SettingsActivity"
                 android:theme="@style/platformActivityTheme"
                 android:icon="@mipmap/ic_launcher"
